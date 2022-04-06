@@ -74,26 +74,6 @@ const getIndexBody = function(variables) {
   return template;
 };
 
-const getRates = () => {
-  return new Promise((resolve, reject) => {
-    http.get('http://www.cnb.cz/cs/financni_trhy/devizovy_trh/kurzy_devizoveho_trhu/denni_kurz.txt', (response) => {
-      let chunks = [];
-
-      response.on('data', (fragments) => {
-        chunks.push(fragments);
-      });
-
-      response.on('end', () => {
-        resolve(Buffer.concat(chunks).toString());
-      });
-
-      response.on('error', (error) => {
-        reject(error);
-      });
-    });
-  });
-};
-
 http.createServer(async function (req, res) {
   if(req.url.startsWith('/favicon.ico')) {
     res.writeHead(200, { 'Content-Type': 'text/html' });
@@ -105,17 +85,6 @@ http.createServer(async function (req, res) {
     // TOKEN: process.env.TOKEN,
     res.write(getIndexBody({}));
     res.end();
-  } else if(req.url.startsWith('/kurzy')) {
-    getRates()
-      .then(response => {
-        res.writeHead(200, { 'Content-Type': 'text/plain;charset=UTF-8' });
-        res.end(response)
-      })
-      .catch(err => {
-        console.error(`Error while fetching rates: ${err}`)
-        res.writeHead(404, { 'Content-Type': 'text/plain;charset=UTF-8' });
-        res.end('');
-      })
   } else {
     let filepath = `.${req.url}`;
 
