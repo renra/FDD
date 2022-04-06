@@ -1,12 +1,10 @@
-FROM node:14.18.1
+FROM node:16.14.2-alpine3.15
 
 ENV DIR /usr/src/app
 RUN mkdir -p ${DIR}
 WORKDIR ${DIR}
 
-RUN curl -L -o dumb-init.deb https://github.com/Yelp/dumb-init/releases/download/v1.2.5/dumb-init_1.2.5_amd64.deb && \
-  dpkg -i dumb-init.deb && \
-  rm dumb-init.deb
+RUN apk add dumb-init make
 
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 
