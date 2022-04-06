@@ -13,7 +13,7 @@ ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 RUN npm install -g node-watch typescript sass esbuild
 
 COPY package.json package.json
-#COPY package-lock.json package-lock.json
+COPY package-lock.json package-lock.json
 COPY tsconfig.json tsconfig.json
 
 RUN npm install
