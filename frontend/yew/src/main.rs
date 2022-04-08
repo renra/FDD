@@ -15,12 +15,8 @@ pub mod use_state_with_enum {
 
     {
       use_effect(move || {
-        wasm_bindgen_futures::spawn_local(async move {
-          // Uncomment to make the page load forever
-          //data_state.set(RequestState::Loading);
-
-          ()
-        });
+        // Uncomment to make the page load forever
+        //data_state.set(RequestState::Loading);
         || ()
       });
     }
