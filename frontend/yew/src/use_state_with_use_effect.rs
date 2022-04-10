@@ -1,31 +1,72 @@
-use yew::{html, function_component, use_effect, use_state};
+use yew::{html, function_component, use_effect, use_state, use_state_eq, use_effect_with_deps};
 
+#[derive(PartialEq, Copy, Clone)]
 pub enum RequestState {
   NotAsked,
-  //Loading,
+  Loading,
   //Success,
   //Failure
 }
 
+pub fn request_state_to_string(state: RequestState) -> String {
+  match state {
+    // It is tempting to match by NotAsked ... instead of RequestState::NotAsked
+    // but that leads to incorrect results
+    //
+    // !!!Don't do!!!
+    // NotAsked => String::from("not asked"),
+    // Loading => String::from("loading"),
+
+    RequestState::NotAsked => String::from("not asked"),
+    RequestState::Loading => String::from("loading"),
+  }
+}
+
 #[function_component(App)]
 pub fn app() -> Html {
+  // use_effect is run on every render and use_state triggers a re-render
+  // so setting the state directly here triggers and endless loop
+  // If you want the same behaviour as in React you must call use_effect_with_deps
+  //
+  // !!!Don't do!!!
+  //let data_state = use_state(|| RequestState::NotAsked);
+
+  //{
+  //  use_effect(move || {
+  //    //data_state.set(RequestState::Loading);
+  //    || ()
+  //  });
+  //}
+
+  // Solution #1 use_state_eq
+  //let data_state = use_state_eq(|| RequestState::NotAsked);
+
+  //{
+  //  let data_state = data_state.clone();
+  //  use_effect(move || {
+  //    data_state.set(RequestState::Loading);
+  //    || ()
+  //  });
+  //}
+
+  // Solution #2 use_effect_with_deps
   let data_state = use_state(|| RequestState::NotAsked);
 
   {
-    use_effect(move || {
-      // Not sure why but uncommenting the following line completely freezes the app
-      // Looks like and endless loop to me
-      //
-      // !!!Don't do!!!
-      //data_state.set(RequestState::Loading);
-      || ()
-    });
+    let data_state = data_state.clone();
+    use_effect_with_deps(
+      move |_| {
+        data_state.set(RequestState::Loading);
+        || ()
+      },
+      ()
+    );
   }
 
   html! {
     <>
       <h1>{ "FDD - Yew" }</h1>
-      <div>{ "Strange behaviour of use_state" }</div>
+      <div>{ format!("The request state is: {}", request_state_to_string(*data_state)) }</div>
     </>
   }
 }
