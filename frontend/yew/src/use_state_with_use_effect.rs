@@ -32,30 +32,34 @@ pub fn app() -> Html {
   //let data_state = use_state(|| RequestState::NotAsked);
 
   //{
-  //  use_effect(move || {
-  //    //data_state.set(RequestState::Loading);
-  //    || ()
-  //  });
-  //}
-
-  // Solution #1 use_state_eq
-  //let data_state = use_state_eq(|| RequestState::NotAsked);
-
-  //{
   //  let data_state = data_state.clone();
   //  use_effect(move || {
+  //    log::info!("use_effect called");
   //    data_state.set(RequestState::Loading);
   //    || ()
   //  });
   //}
 
-  // Solution #2 use_effect_with_deps
+  // Solution #1 use_state_eq => 2 renders
+  //let data_state = use_state_eq(|| RequestState::NotAsked);
+
+  //{
+  //  let data_state = data_state.clone();
+  //  use_effect(move || {
+  //    log::info!("use_effect called (with use_state_eq)");
+  //    data_state.set(RequestState::Loading);
+  //    || ()
+  //  });
+  //}
+
+  // Solution #2 use_effect_with_deps => 1 render
   let data_state = use_state(|| RequestState::NotAsked);
 
   {
     let data_state = data_state.clone();
     use_effect_with_deps(
       move |_| {
+        log::info!("use_effect_with_deps called");
         data_state.set(RequestState::Loading);
         || ()
       },
