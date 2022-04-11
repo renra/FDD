@@ -40,7 +40,8 @@ pub fn app() -> Html {
   //  });
   //}
 
-  // Solution #1 use_state_eq => 2 renders
+  // Solution #1 use_state_eq => 2 renders, 2 side-effect calls
+  //   this may be wrong depending on the use-case
   //let data_state = use_state_eq(|| RequestState::NotAsked);
 
   //{
@@ -52,7 +53,7 @@ pub fn app() -> Html {
   //  });
   //}
 
-  // Solution #2 use_effect_with_deps => 1 render
+  // Solution #2 use_effect_with_deps => 2 renders, 1 side-effect call
   let data_state = use_state(|| RequestState::NotAsked);
 
   {
@@ -66,6 +67,8 @@ pub fn app() -> Html {
       ()
     );
   }
+
+  log::info!("Rendering");
 
   html! {
     <>
