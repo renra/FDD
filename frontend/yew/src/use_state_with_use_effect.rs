@@ -25,7 +25,7 @@ pub fn request_state_to_string(state: RequestState) -> String {
 #[function_component(App)]
 pub fn app() -> Html {
   // use_effect is run on every render and use_state triggers a re-render
-  // so setting the state directly here triggers and endless loop
+  // so setting the state directly here triggers an endless loop
   // If you want the same behaviour as in React you must call use_effect_with_deps
   //
   // !!!Don't do!!!
